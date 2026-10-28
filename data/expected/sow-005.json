@@ -1,0 +1,11 @@
+{
+  "document_type": "gift_letter",
+  "subject_name": "Wong Jun Hao",
+  "issuer": "Wong Siew Lan",
+  "counterparty": "Wong Siew Lan",
+  "document_date": "2026-08-02",
+  "currency": "SGD",
+  "principal_amount": 350000.0,
+  "sow_category": "gift",
+  "must_flag": ["donor's source of funds (apartment sale, June 2026) is asserted without supporting document"]
+}

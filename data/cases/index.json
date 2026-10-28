@@ -1,0 +1,9 @@
+{
+  "cases": [
+    {"id": "sow-001", "subject": "Lim Hui Ling", "file": "sow-001-bank-statement.md", "document_type": "bank_statement", "planted_issue": "60,000 cash deposit with no stated origin"},
+    {"id": "sow-002", "subject": "Tan Wei Ming", "file": "sow-002-share-sale-agreement.md", "document_type": "share_sale_agreement", "planted_issue": "two tranches; only tranche 1 has a firm payment date"},
+    {"id": "sow-003", "subject": "Chua Mei Xin", "file": "sow-003-trust-deed.md", "document_type": "trust_deed", "planted_issue": "trust fund in USD, distribution in SGD"},
+    {"id": "sow-004", "subject": "Rajesh Pillai", "file": "sow-004-salary-letter.md", "document_type": "salary_letter", "planted_issue": "annual total must be computed from monthly components plus bonus"},
+    {"id": "sow-005", "subject": "Wong Jun Hao", "file": "sow-005-gift-letter.md", "document_type": "gift_letter", "planted_issue": "donor's own source of funds is a single unsupported sentence"}
+  ]
+}

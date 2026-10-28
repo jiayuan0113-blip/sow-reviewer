@@ -1,0 +1,10 @@
+{
+  "document_type": "share_sale_agreement",
+  "subject_name": "Tan Wei Ming",
+  "counterparty": "Harbourview Ventures Pte Ltd",
+  "document_date": "2026-04-28",
+  "currency": "SGD",
+  "principal_amount": 2750000.0,
+  "sow_category": "business_sale",
+  "must_flag": ["tranche 2 (2,330,000) has no firm payment date, conditional on earn-out"]
+}

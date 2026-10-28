@@ -1,0 +1,15 @@
+[project]
+name = "sow-reviewer"
+version = "0.1.0"
+description = "Multi-agent source-of-wealth document review on Google ADK + Gemini (synthetic data only)"
+authors = [{ name = "Joyce Yu" }]
+requires-python = ">=3.12"
+dependencies = [
+    "google-adk>=2.13.0",
+    "mcp[cli]>=2.3.0",
+    "pytest>=9.2.0",
+    "python-dotenv>=1.2.4",
+]
+
+[tool.uv]
+package = false

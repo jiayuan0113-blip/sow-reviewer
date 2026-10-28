@@ -1,0 +1,11 @@
+{
+  "document_type": "trust_deed",
+  "subject_name": "Chua Mei Xin",
+  "issuer": "Meridian Fiduciary Services (Jersey) Limited",
+  "counterparty": "Meridian Fiduciary Services (Jersey) Limited",
+  "document_date": "2026-03-10",
+  "currency": "SGD",
+  "principal_amount": 1200000.0,
+  "sow_category": "inheritance_or_trust",
+  "must_flag": ["initial trust fund stated in USD (5,000,000); distribution in SGD"]
+}
