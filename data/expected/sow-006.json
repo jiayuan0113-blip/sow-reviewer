@@ -1,0 +1,29 @@
+{
+  "document_type": "bank_statement",
+  "subject_name": "Ong Pei Shan",
+  "issuer": "Straits Mercantile Bank Limited",
+  "document_date": "2026-10-01",
+  "period_start": "2026-07-01",
+  "period_end": "2026-09-30",
+  "currency": "SGD",
+  "principal_amount": 238410.25,
+  "sow_category": "employment_income",
+  "must_have_transactions": [
+    {
+      "date": "2026-08-20",
+      "direction": "credit",
+      "amount": 52000.0,
+      "counterparty": "Fernhollow Analytics Pte Ltd"
+    },
+    {
+      "date": "2026-09-10",
+      "direction": "debit",
+      "amount": 120000.0
+    }
+  ],
+  "must_flag": [],
+  "expected_overall": "verified",
+  "expected_disposition": "evidenced",
+  "sanctions_hit": false,
+  "must_flag_keywords": []
+}

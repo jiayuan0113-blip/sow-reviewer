@@ -7,5 +7,15 @@
   "currency": "SGD",
   "principal_amount": 1200000.0,
   "sow_category": "inheritance_or_trust",
-  "must_flag": ["initial trust fund stated in USD (5,000,000); distribution in SGD"]
+  "must_flag": [
+    "initial trust fund stated in USD (5,000,000); distribution in SGD"
+  ],
+  "expected_overall": "needs_follow_up",
+  "expected_disposition": "follow_up",
+  "sanctions_hit": false,
+  "must_flag_keywords": [
+    [
+      "usd"
+    ]
+  ]
 }

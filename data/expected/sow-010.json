@@ -1,0 +1,15 @@
+{
+  "document_type": "salary_letter",
+  "subject_name": "Orrin Talvek Drossmere",
+  "issuer": "Quillstone Marine Services Pte Ltd",
+  "counterparty": "Quillstone Marine Services Pte Ltd",
+  "document_date": "2026-08-24",
+  "currency": "SGD",
+  "principal_amount": 198000.0,
+  "sow_category": "employment_income",
+  "must_flag": [],
+  "expected_overall": "verified",
+  "expected_disposition": "escalate_edd",
+  "sanctions_hit": true,
+  "must_flag_keywords": []
+}

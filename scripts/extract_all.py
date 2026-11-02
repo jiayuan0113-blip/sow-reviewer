@@ -66,9 +66,14 @@ async def extract_one(runner: InMemoryRunner, case: dict) -> tuple[ExtractedDocu
 async def main(only: str | None) -> None:
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     runner = InMemoryRunner(agent=extraction_agent, app_name=APP_NAME)
-    rows = []
+    rows, failed = [], []
     for case in load_cases(only):
-        extracted, metrics = await extract_one(runner, case)
+        try:
+            extracted, metrics = await extract_one(runner, case)
+        except Exception as exc:  # One failed case must not lose the rest of the batch.
+            failed.append(case["id"])
+            print(f"{case['id']}: FAILED {type(exc).__name__}: {str(exc)[:200]}")
+            continue
         out = OUT_DIR / f"{case['id']}.json"
         out.write_text(extracted.model_dump_json(indent=2), encoding="utf-8")
         rows.append((case["id"], extracted.document_type, extracted.principal_amount, metrics))
@@ -81,6 +86,8 @@ async def main(only: str | None) -> None:
         json.dumps([{"case": r[0], "document_type": r[1], "principal_amount": r[2], **r[3]} for r in rows], indent=2),
         encoding="utf-8",
     )
+    if failed:
+        raise SystemExit(f"Failed: {', '.join(failed)}. Their previous output, if any, is unchanged.")
 
 
 if __name__ == "__main__":

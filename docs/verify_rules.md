@@ -1,6 +1,6 @@
-# verify() 规则表（10-29 手写）
+# verify() 规则表
 
-`verify(extracted: ExtractedDocument) -> VerificationResult` 是你自己敲的函数。它不调模型，只看抽取结果和这张表，给每个字段定一个档位，再汇总成整份材料的档位。
+`verify(extracted: ExtractedDocument) -> VerificationResult` 不调模型，只看抽取结果和这张表，给每个字段定一个档位，再汇总成整份材料的档位。
 
 ## 字段档位
 
@@ -21,7 +21,7 @@
 | salary_letter | subject_name, issuer, document_date, currency, principal_amount |
 | gift_letter | subject_name, counterparty, document_date, currency, principal_amount |
 
-不在表里的字段一律 `not_applicable`。
+不在表里的字段一律 `not_applicable`。`document_type` 是 `other` 时没有规则可查，整份直接 `insufficient`。
 
 ## 整份材料的档位
 
@@ -58,12 +58,12 @@ class VerificationResult:
 
 ---
 
-# sanctions_lookup MCP 工具（10-29 手写）
+# sanctions_lookup MCP 工具
 
 `tools/sanctions_server.py`：用 `mcp.server.mcpserver.MCPServer`（mcp 2.x 里 FastMCP 改名叫 MCPServer，装饰器还是 `@server.tool()`），stdio 传输。
 
 - 名单文件：`data/sanctions_synthetic.json`，自己造 10 个条目，字段 `name`、`aliases[]`、`list_name`、`dob`（可空）。**不要用任何真实名单**。
 - 工具签名：`sanctions_lookup(name: str) -> dict`，返回 `{"query", "matches": [{"name", "list_name", "score"}], "checked_at"}`。
-- 匹配：大小写无关，去标点，整词命中算 1.0，别名命中算 0.9，姓名各词都出现但顺序不同算 0.7。先写最笨的，能测就行。
+- 匹配：大小写无关，去标点，主名完全相同算 1.0，别名完全相同算 0.9，主名或别名的每个词都出现（顺序不限）算 0.7。
 - 单元测试直接 import 函数本体测，不走 MCP。
 - 接到 ADK：`MCPToolset(connection_params=StdioConnectionParams(server_params=StdioServerParameters(command="uv", args=["run", "python", "tools/sanctions_server.py"])))`。

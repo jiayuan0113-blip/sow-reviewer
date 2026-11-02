@@ -1,0 +1,21 @@
+{
+  "document_type": "salary_letter",
+  "subject_name": "Farah Binte Rahmat",
+  "issuer": "Tidewell Biologics Pte Ltd",
+  "counterparty": "Tidewell Biologics Pte Ltd",
+  "document_date": null,
+  "currency": "SGD",
+  "principal_amount": 156000.0,
+  "sow_category": "employment_income",
+  "must_flag": [
+    "letter carries no issue date"
+  ],
+  "expected_overall": "insufficient",
+  "expected_disposition": "insufficient",
+  "sanctions_hit": false,
+  "must_flag_keywords": [
+    [
+      "date"
+    ]
+  ]
+}

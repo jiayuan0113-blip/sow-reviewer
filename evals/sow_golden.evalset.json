@@ -1,0 +1,582 @@
+{
+  "eval_set_id": "sow_golden",
+  "name": "SoW golden cases",
+  "description": "10 synthetic documents covering evidenced, follow-up, insufficient and a sanctions hit.",
+  "eval_cases": [
+    {
+      "evalId": "sow-001",
+      "conversation": [
+        {
+          "invocationId": "sow-001-1",
+          "userContent": {
+            "parts": [
+              {
+                "text": "> SYNTHETIC DOCUMENT — generated for software testing. All names, institutions and account numbers are fictional.\n\n# STRAITS MERCANTILE BANK LIMITED\n**Account Statement**\n\nAccount holder: **LIM HUI LING**\nAccount: Premier Savings Account 301-88214-7\nStatement period: 01 Jul 2026 to 30 Sep 2026\nStatement date: 02 Oct 2026\nCurrency: SGD\n\n| Date | Description | Withdrawal | Deposit | Balance |\n|---|---|---|---|---|\n| 01 Jul 2026 | Opening balance | | | 184,230.55 |\n| 03 Jul 2026 | GIRO CREDIT NEXORA ANALYTICS PTE LTD SALARY JUN26 | | 18,500.00 | 202,730.55 |\n| 09 Jul 2026 | FAST PAYMENT TO ISLANDWIDE PROPERTY MGMT | 4,120.00 | | 198,610.55 |\n| 15 Jul 2026 | CASH DEPOSIT BRANCH 014 | | 60,000.00 | 258,610.55 |\n| 22 Jul 2026 | CARD PAYMENT MERIDIAN DENTAL | 380.00 | | 258,230.55 |\n| 03 Aug 2026 | GIRO CREDIT NEXORA ANALYTICS PTE LTD SALARY JUL26 | | 18,500.00 | 276,730.55 |\n| 11 Aug 2026 | TELEGRAPHIC TRANSFER INWARD HARBOURVIEW VENTURES PTE LTD REF: SHARE SALE CONSIDERATION TRANCHE 1 | | 420,000.00 | 696,730.55 |\n| 11 Aug 2026 | TT INWARD FEE | 20.00 | | 696,710.55 |\n| 19 Aug 2026 | FAST PAYMENT TO ISLANDWIDE PROPERTY MGMT | 4,120.00 | | 692,590.55 |\n| 03 Sep 2026 | GIRO CREDIT NEXORA ANALYTICS PTE LTD SALARY AUG26 | | 18,500.00 | 711,090.55 |\n| 12 Sep 2026 | FAST PAYMENT TO ISLANDWIDE PROPERTY MGMT | 4,120.00 | | 706,970.55 |\n| 25 Sep 2026 | TRANSFER TO FIXED DEPOSIT 301-88214-7-FD01 | 300,000.00 | | 406,970.55 |\n| 30 Sep 2026 | Closing balance | | | 406,970.55 |\n\nTotal deposits this period: SGD 535,500.00\nTotal withdrawals this period: SGD 312,760.00\n\nThis statement is computer-generated and does not require a signature.\nStraits Mercantile Bank Limited · 1 Harbourfront Walk, Singapore 098001 · Co. Reg. No. 199100042X\n"
+              }
+            ],
+            "role": "user"
+          },
+          "intermediateData": {
+            "toolUses": [
+              {
+                "args": {},
+                "name": "extraction_agent"
+              },
+              {
+                "args": {},
+                "name": "run_verify"
+              },
+              {
+                "args": {},
+                "name": "sanctions_lookup"
+              },
+              {
+                "args": {},
+                "name": "compute_disposition"
+              },
+              {
+                "args": {},
+                "name": "critic_loop"
+              }
+            ],
+            "toolResponses": [
+              {
+                "name": "compute_disposition",
+                "response": {
+                  "disposition": "follow_up"
+                }
+              }
+            ],
+            "intermediateResponses": []
+          },
+          "creationTimestamp": 0.0
+        }
+      ],
+      "sessionInput": {
+        "appName": "sow_reviewer",
+        "userId": "eval",
+        "state": {}
+      },
+      "creationTimestamp": 0.0,
+      "finalSessionState": {}
+    },
+    {
+      "evalId": "sow-002",
+      "conversation": [
+        {
+          "invocationId": "sow-002-1",
+          "userContent": {
+            "parts": [
+              {
+                "text": "> SYNTHETIC DOCUMENT — generated for software testing. All names, companies and figures are fictional.\n\n# SHARE SALE AND PURCHASE AGREEMENT\n\n**Dated 28 April 2026**\n\n**BETWEEN**\n\n(1) **TAN WEI MING** (NRIC S79xxxxxA), of 12 Jalan Kembangan, Singapore 419xxx (the \"**Seller**\"); and\n\n(2) **HARBOURVIEW VENTURES PTE LTD** (UEN 201912345K), a company incorporated in Singapore with its registered office at 80 Robinson Road #10-01, Singapore 068898 (the \"**Buyer**\").\n\n## RECITALS\n\nA. Kestrel Logistics Pte Ltd (UEN 201506789C) (the \"**Company**\") has an issued share capital of 1,000,000 ordinary shares.\nB. The Seller is the legal and beneficial owner of 350,000 ordinary shares in the Company, representing 35% of the issued share capital (the \"**Sale Shares**\").\nC. The Seller has agreed to sell and the Buyer has agreed to purchase the Sale Shares on the terms of this Agreement.\n\n## 1. SALE AND PURCHASE\n1.1 The Seller shall sell and the Buyer shall purchase the Sale Shares free from all encumbrances with effect from Completion.\n\n## 2. CONSIDERATION\n2.1 The total consideration for the Sale Shares is **Singapore Dollars Two Million Seven Hundred and Fifty Thousand (S$2,750,000.00)** (the \"**Consideration**\").\n2.2 The Consideration shall be paid by the Buyer to the Seller in two tranches by telegraphic transfer to the Seller's nominated account at Straits Mercantile Bank Limited:\n  (a) **Tranche 1**: S$420,000.00 within five (5) Business Days after Completion; and\n  (b) **Tranche 2**: S$2,330,000.00 upon satisfaction of the Earn-out Condition in Schedule 2, and in any event no later than 31 December 2027.\n\n## 3. COMPLETION\n3.1 Completion shall take place on **15 May 2026** at the offices of the Buyer's solicitors.\n3.2 At Completion the Seller shall deliver duly executed share transfer forms and the share certificates for the Sale Shares.\n\n## 4. WARRANTIES\n4.1 The Seller warrants that it has full power and authority to enter into this Agreement and that the Sale Shares are fully paid.\n\n## 5. GOVERNING LAW\n5.1 This Agreement is governed by the laws of the Republic of Singapore.\n\n**SCHEDULE 2 — Earn-out Condition**\nThe Company's audited revenue for the financial year ending 31 December 2026 shall not be less than S$18,000,000.\n\n---\n\n**SIGNED** by TAN WEI MING\n_/s/ Tan Wei Ming_\nin the presence of: Priya Nair, Advocate & Solicitor\n\n**SIGNED** for and on behalf of HARBOURVIEW VENTURES PTE LTD\n_/s/ Daniel Koh_, Director\nin the presence of: Priya Nair, Advocate & Solicitor\n"
+              }
+            ],
+            "role": "user"
+          },
+          "intermediateData": {
+            "toolUses": [
+              {
+                "args": {},
+                "name": "extraction_agent"
+              },
+              {
+                "args": {},
+                "name": "run_verify"
+              },
+              {
+                "args": {},
+                "name": "sanctions_lookup"
+              },
+              {
+                "args": {},
+                "name": "compute_disposition"
+              },
+              {
+                "args": {},
+                "name": "critic_loop"
+              }
+            ],
+            "toolResponses": [
+              {
+                "name": "compute_disposition",
+                "response": {
+                  "disposition": "follow_up"
+                }
+              }
+            ],
+            "intermediateResponses": []
+          },
+          "creationTimestamp": 0.0
+        }
+      ],
+      "sessionInput": {
+        "appName": "sow_reviewer",
+        "userId": "eval",
+        "state": {}
+      },
+      "creationTimestamp": 0.0,
+      "finalSessionState": {}
+    },
+    {
+      "evalId": "sow-003",
+      "conversation": [
+        {
+          "invocationId": "sow-003-1",
+          "userContent": {
+            "parts": [
+              {
+                "text": "> SYNTHETIC DOCUMENT — generated for software testing. All names, trusts, trustees and figures are fictional.\n\n# THE ROSEWOOD FAMILY TRUST\n\n## PART A — EXTRACT OF DEED OF SETTLEMENT\n\n**This Deed of Settlement** is made on **9 March 2018** between:\n\n**CHUA BENG HUAT** of Singapore (the \"**Settlor**\"); and\n**MERIDIAN FIDUCIARY SERVICES (JERSEY) LIMITED**, registered in Jersey, Channel Islands, no. 98765 (the \"**Trustee**\").\n\n1. **Establishment.** The Settlor hereby settles upon the Trustee the sum of **United States Dollars Five Million (USD 5,000,000)** (the \"**Initial Trust Fund**\") to be held on the trusts set out herein. The Trust shall be known as The Rosewood Family Trust.\n2. **Beneficiaries.** The Beneficiaries are the Settlor's children, namely **CHUA MEI XIN** and **CHUA WEI JIE**, and their issue.\n3. **Discretionary powers.** The Trustee may in its absolute discretion pay or apply the income or capital of the Trust Fund to or for the benefit of any one or more of the Beneficiaries.\n4. **Proper law.** This Trust is governed by the laws of Jersey.\n\nSigned by the Settlor: _/s/ Chua Beng Huat_\nSigned for the Trustee: _/s/ A. Le Marchand_, Director\n\n## PART B — LETTER OF DISTRIBUTION\n\n**Meridian Fiduciary Services (Jersey) Limited**\nOak House, 22 Hill Street, St Helier, Jersey JE2 4UA\n\n**10 March 2026**\n\nTo: Ms Chua Mei Xin\nRe: The Rosewood Family Trust — Capital Distribution\n\nDear Ms Chua,\n\nWe refer to the resolution of the Trustee dated 2 March 2026. Following the passing of the Settlor, Mr Chua Beng Huat, on 14 November 2025, the Trustee has resolved to make a capital distribution to you as a Beneficiary of the Trust.\n\nA distribution of **Singapore Dollars One Million Two Hundred Thousand (SGD 1,200,000.00)** was remitted on 10 March 2026 by telegraphic transfer to your account ending 7731 at Straits Mercantile Bank Limited, Singapore. The distribution was funded from the Trust's liquid assets, which derive from the Initial Trust Fund settled in 2018 and its investment returns.\n\nThe Trust Fund's net asset value as at 31 December 2025 was USD 7,420,000, per the Trust's accounts prepared by Lanes & Pryor LLP.\n\nYours faithfully,\n_/s/ A. Le Marchand_\nDirector, for and on behalf of the Trustee\n"
+              }
+            ],
+            "role": "user"
+          },
+          "intermediateData": {
+            "toolUses": [
+              {
+                "args": {},
+                "name": "extraction_agent"
+              },
+              {
+                "args": {},
+                "name": "run_verify"
+              },
+              {
+                "args": {},
+                "name": "sanctions_lookup"
+              },
+              {
+                "args": {},
+                "name": "compute_disposition"
+              },
+              {
+                "args": {},
+                "name": "critic_loop"
+              }
+            ],
+            "toolResponses": [
+              {
+                "name": "compute_disposition",
+                "response": {
+                  "disposition": "follow_up"
+                }
+              }
+            ],
+            "intermediateResponses": []
+          },
+          "creationTimestamp": 0.0
+        }
+      ],
+      "sessionInput": {
+        "appName": "sow_reviewer",
+        "userId": "eval",
+        "state": {}
+      },
+      "creationTimestamp": 0.0,
+      "finalSessionState": {}
+    },
+    {
+      "evalId": "sow-004",
+      "conversation": [
+        {
+          "invocationId": "sow-004-1",
+          "userContent": {
+            "parts": [
+              {
+                "text": "> SYNTHETIC DOCUMENT — generated for software testing. All names, companies and figures are fictional.\n\n**ORION SEMICONDUCTOR ASIA PTE LTD**\nUEN 201003456H · 3 Fusionopolis Way #12-20, Singapore 138633\nHuman Resources Department\n\n**Date: 6 July 2026**\n**Ref: HR/EMP/2026/0412**\n\n**TO WHOM IT MAY CONCERN**\n\n**RE: CONFIRMATION OF EMPLOYMENT AND REMUNERATION — MR RAJESH PILLAI**\n\nThis is to confirm that **Mr Rajesh Pillai** (FIN G52xxxxxN) has been employed by Orion Semiconductor Asia Pte Ltd since **1 February 2019** and currently holds the position of **Principal Engineer, Process Integration**. He is employed on a full-time, permanent basis.\n\nHis current remuneration is as follows:\n\n| Component | Amount (SGD) | Frequency |\n|---|---|---|\n| Base salary | 17,500.00 | Monthly |\n| Fixed allowance (transport) | 800.00 | Monthly |\n| Annual wage supplement | 17,500.00 | Once a year, December |\n| Performance bonus paid March 2026 (for FY2025) | 63,000.00 | Discretionary, annual |\n\nSalary is paid on the 25th of each month by GIRO to the employee's designated bank account. All statutory CPF contributions are made in accordance with Singapore law.\n\nThis letter is issued at the request of the employee for the purpose of his banking relationship and does not constitute a guarantee of continued employment.\n\nYours faithfully,\n\n_/s/ Amanda Teo_\nAmanda Teo\nDirector, Human Resources\nOrion Semiconductor Asia Pte Ltd\nTel: +65 6xxx xxxx · hr@orion-semi.example\n"
+              }
+            ],
+            "role": "user"
+          },
+          "intermediateData": {
+            "toolUses": [
+              {
+                "args": {},
+                "name": "extraction_agent"
+              },
+              {
+                "args": {},
+                "name": "run_verify"
+              },
+              {
+                "args": {},
+                "name": "sanctions_lookup"
+              },
+              {
+                "args": {},
+                "name": "compute_disposition"
+              },
+              {
+                "args": {},
+                "name": "critic_loop"
+              }
+            ],
+            "toolResponses": [
+              {
+                "name": "compute_disposition",
+                "response": {
+                  "disposition": "evidenced"
+                }
+              }
+            ],
+            "intermediateResponses": []
+          },
+          "creationTimestamp": 0.0
+        }
+      ],
+      "sessionInput": {
+        "appName": "sow_reviewer",
+        "userId": "eval",
+        "state": {}
+      },
+      "creationTimestamp": 0.0,
+      "finalSessionState": {}
+    },
+    {
+      "evalId": "sow-005",
+      "conversation": [
+        {
+          "invocationId": "sow-005-1",
+          "userContent": {
+            "parts": [
+              {
+                "text": "> SYNTHETIC DOCUMENT — generated for software testing. All names, addresses and figures are fictional.\n\n# DECLARATION OF GIFT\n\n**Date: 2 August 2026**\n\nI, **WONG SIEW LAN** (NRIC S55xxxxxD), of Block 118 Bishan Street 12 #09-xxx, Singapore 570118, hereby declare as follows:\n\n1. I am the mother of **WONG JUN HAO** (NRIC S92xxxxxF) (the \"**Recipient**\").\n\n2. On **28 July 2026** I transferred the sum of **Singapore Dollars Three Hundred and Fifty Thousand (S$350,000.00)** from my account at Straits Mercantile Bank Limited to the Recipient's account at the same bank, by way of an outright and unconditional gift.\n\n3. The gift is made out of natural love and affection. No part of the sum is a loan, and I do not expect repayment or any consideration in return. The Recipient is free to use the funds as he sees fit.\n\n4. The funds gifted were derived from the proceeds of sale of my apartment at Bishan, which was sold in June 2026.\n\n5. I confirm that I am of sound mind, that I make this gift voluntarily, and that the gift does not render me unable to meet my own obligations.\n\nSigned by the Donor:\n\n_/s/ Wong Siew Lan_\nWONG SIEW LAN\n\nWitnessed by:\n\n_/s/ Lee Kah Wai_\nLEE KAH WAI (NRIC S80xxxxxB)\nNeighbour, Block 118 Bishan Street 12\n\nAcknowledged by the Recipient:\n\n_/s/ Wong Jun Hao_\nWONG JUN HAO\n"
+              }
+            ],
+            "role": "user"
+          },
+          "intermediateData": {
+            "toolUses": [
+              {
+                "args": {},
+                "name": "extraction_agent"
+              },
+              {
+                "args": {},
+                "name": "run_verify"
+              },
+              {
+                "args": {},
+                "name": "sanctions_lookup"
+              },
+              {
+                "args": {},
+                "name": "compute_disposition"
+              },
+              {
+                "args": {},
+                "name": "critic_loop"
+              }
+            ],
+            "toolResponses": [
+              {
+                "name": "compute_disposition",
+                "response": {
+                  "disposition": "follow_up"
+                }
+              }
+            ],
+            "intermediateResponses": []
+          },
+          "creationTimestamp": 0.0
+        }
+      ],
+      "sessionInput": {
+        "appName": "sow_reviewer",
+        "userId": "eval",
+        "state": {}
+      },
+      "creationTimestamp": 0.0,
+      "finalSessionState": {}
+    },
+    {
+      "evalId": "sow-006",
+      "conversation": [
+        {
+          "invocationId": "sow-006-1",
+          "userContent": {
+            "parts": [
+              {
+                "text": "> SYNTHETIC DOCUMENT — generated for software testing. All names, institutions and account numbers are fictional.\n\n# STRAITS MERCANTILE BANK LIMITED\n**Account Statement**\n\nAccount holder: **ONG PEI SHAN**\nAccount: Premier Savings Account 301-55120-4\nStatement period: 01 Jul 2026 to 30 Sep 2026\nStatement date: 01 Oct 2026\nCurrency: SGD\n\n| Date | Description | Withdrawal | Deposit | Balance |\n|---|---|---|---|---|\n| 01 Jul 2026 | Opening balance | | | 278,510.25 |\n| 03 Jul 2026 | GIRO CREDIT FERNHOLLOW ANALYTICS PTE LTD SALARY JUN26 | | 14,200.00 | 292,710.25 |\n| 12 Jul 2026 | CARD PAYMENT LANTERN GROCERS | 640.00 | | 292,070.25 |\n| 03 Aug 2026 | GIRO CREDIT FERNHOLLOW ANALYTICS PTE LTD SALARY JUL26 | | 14,200.00 | 306,270.25 |\n| 15 Aug 2026 | FAST PAYMENT TO ISLANDWIDE PROPERTY MGMT | 3,380.00 | | 302,890.25 |\n| 20 Aug 2026 | GIRO CREDIT FERNHOLLOW ANALYTICS PTE LTD DEFERRED BONUS FY2025 | | 52,000.00 | 354,890.25 |\n| 03 Sep 2026 | GIRO CREDIT FERNHOLLOW ANALYTICS PTE LTD SALARY AUG26 | | 14,200.00 | 369,090.25 |\n| 10 Sep 2026 | TRANSFER TO FIXED DEPOSIT 301-55120-4-FD02 | 120,000.00 | | 249,090.25 |\n| 18 Sep 2026 | FAST PAYMENT TO ISLANDWIDE PROPERTY MGMT | 3,380.00 | | 245,710.25 |\n| 26 Sep 2026 | CARD PAYMENT HARBOUR LINE TRAVEL | 7,300.00 | | 238,410.25 |\n| 30 Sep 2026 | Closing balance | | | 238,410.25 |\n\nTotal deposits this period: SGD 94,600.00\nTotal withdrawals this period: SGD 134,700.00\n\nThis statement is computer-generated and does not require a signature.\nStraits Mercantile Bank Limited · 1 Harbourfront Walk, Singapore 098001 · Co. Reg. No. 199100042X\n"
+              }
+            ],
+            "role": "user"
+          },
+          "intermediateData": {
+            "toolUses": [
+              {
+                "args": {},
+                "name": "extraction_agent"
+              },
+              {
+                "args": {},
+                "name": "run_verify"
+              },
+              {
+                "args": {},
+                "name": "sanctions_lookup"
+              },
+              {
+                "args": {},
+                "name": "compute_disposition"
+              },
+              {
+                "args": {},
+                "name": "critic_loop"
+              }
+            ],
+            "toolResponses": [
+              {
+                "name": "compute_disposition",
+                "response": {
+                  "disposition": "evidenced"
+                }
+              }
+            ],
+            "intermediateResponses": []
+          },
+          "creationTimestamp": 0.0
+        }
+      ],
+      "sessionInput": {
+        "appName": "sow_reviewer",
+        "userId": "eval",
+        "state": {}
+      },
+      "creationTimestamp": 0.0,
+      "finalSessionState": {}
+    },
+    {
+      "evalId": "sow-007",
+      "conversation": [
+        {
+          "invocationId": "sow-007-1",
+          "userContent": {
+            "parts": [
+              {
+                "text": "> SYNTHETIC DOCUMENT — generated for software testing. All names, companies and figures are fictional.\n\n**TIDEWELL BIOLOGICS PTE LTD**\nUEN 201500000T · 9 Biopolis Crescent #05-02, Singapore 138000\nHuman Resources Department\n\n**TO WHOM IT MAY CONCERN**\n\n**RE: CONFIRMATION OF EMPLOYMENT — MS FARAH BINTE RAHMAT**\n\nThis is to confirm that **Ms Farah Binte Rahmat** (NRIC S88xxxxxK) is employed by Tidewell Biologics Pte Ltd as **Senior Scientist, Assay Development** on a full-time, permanent basis.\n\nHer total annual remuneration is **SGD 156,000.00**, paid in twelve equal monthly instalments by GIRO to her designated bank account.\n\nThis letter is issued at the request of the employee and does not constitute a guarantee of continued employment.\n\nYours faithfully,\n\n_/s/ Marcus Yeo_\nMarcus Yeo\nHead of Human Resources\nTidewell Biologics Pte Ltd\n"
+              }
+            ],
+            "role": "user"
+          },
+          "intermediateData": {
+            "toolUses": [
+              {
+                "args": {},
+                "name": "extraction_agent"
+              },
+              {
+                "args": {},
+                "name": "run_verify"
+              },
+              {
+                "args": {},
+                "name": "sanctions_lookup"
+              },
+              {
+                "args": {},
+                "name": "compute_disposition"
+              },
+              {
+                "args": {},
+                "name": "critic_loop"
+              }
+            ],
+            "toolResponses": [
+              {
+                "name": "compute_disposition",
+                "response": {
+                  "disposition": "insufficient"
+                }
+              }
+            ],
+            "intermediateResponses": []
+          },
+          "creationTimestamp": 0.0
+        }
+      ],
+      "sessionInput": {
+        "appName": "sow_reviewer",
+        "userId": "eval",
+        "state": {}
+      },
+      "creationTimestamp": 0.0,
+      "finalSessionState": {}
+    },
+    {
+      "evalId": "sow-008",
+      "conversation": [
+        {
+          "invocationId": "sow-008-1",
+          "userContent": {
+            "parts": [
+              {
+                "text": "> SYNTHETIC DOCUMENT — generated for software testing. All names, addresses and figures are fictional.\n\n# DECLARATION OF GIFT\n\n**Date: 14 September 2026**\n\nI, **GOH BOON TECK** (NRIC S60xxxxxC), of 41 Serangoon Garden Way, Singapore 555xxx, hereby declare as follows:\n\n1. I am the father of **GOH KAI WEN** (NRIC S95xxxxxG) (the \"**Recipient**\").\n\n2. On **10 September 2026** I transferred the sum of **Singapore Dollars One Hundred Thousand (S$100,000.00)** from my account at Straits Mercantile Bank Limited to the Recipient's account at the same bank, by way of an outright and unconditional gift.\n\n3. No part of the sum is a loan, and I do not expect repayment or any consideration in return.\n\n4. I confirm that I make this gift voluntarily.\n\nSigned by the Donor:\n\n_/s/ Goh Boon Teck_\nGOH BOON TECK\n\nAcknowledged by the Recipient:\n\n_/s/ Goh Kai Wen_\nGOH KAI WEN\n"
+              }
+            ],
+            "role": "user"
+          },
+          "intermediateData": {
+            "toolUses": [
+              {
+                "args": {},
+                "name": "extraction_agent"
+              },
+              {
+                "args": {},
+                "name": "run_verify"
+              },
+              {
+                "args": {},
+                "name": "sanctions_lookup"
+              },
+              {
+                "args": {},
+                "name": "compute_disposition"
+              },
+              {
+                "args": {},
+                "name": "critic_loop"
+              }
+            ],
+            "toolResponses": [
+              {
+                "name": "compute_disposition",
+                "response": {
+                  "disposition": "follow_up"
+                }
+              }
+            ],
+            "intermediateResponses": []
+          },
+          "creationTimestamp": 0.0
+        }
+      ],
+      "sessionInput": {
+        "appName": "sow_reviewer",
+        "userId": "eval",
+        "state": {}
+      },
+      "creationTimestamp": 0.0,
+      "finalSessionState": {}
+    },
+    {
+      "evalId": "sow-009",
+      "conversation": [
+        {
+          "invocationId": "sow-009-1",
+          "userContent": {
+            "parts": [
+              {
+                "text": "> SYNTHETIC DOCUMENT — generated for software testing. All names, companies and figures are fictional.\n\n# SHARE SALE AND PURCHASE AGREEMENT\n\n**Dated 19 May 2026**\n\n**BETWEEN**\n\n(1) **NADIA SIM HUI MIN** (NRIC S84xxxxxJ), of 7 Upper Thomson Walk, Singapore 574xxx (the \"**Seller**\"); and\n\n(2) **[NAME REDACTED]** (UEN [REDACTED]) (the \"**Purchaser**\").\n\n## 1. SALE AND PURCHASE\n1.1 The Seller shall sell and the Purchaser shall purchase 120,000 ordinary shares in Pebblegate Foods Pte Ltd (UEN 201700000P), representing 20% of its issued share capital, with effect from Completion.\n\n## 2. CONSIDERATION\n2.1 The total consideration is **Singapore Dollars Nine Hundred and Eighty Thousand (S$980,000.00)**, payable in full by telegraphic transfer on Completion.\n\n## 3. COMPLETION\n3.1 Completion shall take place on 2 June 2026.\n\n## 4. GOVERNING LAW\n4.1 This Agreement is governed by the laws of the Republic of Singapore.\n\n---\n\n**SIGNED** by NADIA SIM HUI MIN\n_/s/ Nadia Sim_\n\n**SIGNED** for and on behalf of the Purchaser\n_[signature block redacted]_\n"
+              }
+            ],
+            "role": "user"
+          },
+          "intermediateData": {
+            "toolUses": [
+              {
+                "args": {},
+                "name": "extraction_agent"
+              },
+              {
+                "args": {},
+                "name": "run_verify"
+              },
+              {
+                "args": {},
+                "name": "sanctions_lookup"
+              },
+              {
+                "args": {},
+                "name": "compute_disposition"
+              },
+              {
+                "args": {},
+                "name": "critic_loop"
+              }
+            ],
+            "toolResponses": [
+              {
+                "name": "compute_disposition",
+                "response": {
+                  "disposition": "insufficient"
+                }
+              }
+            ],
+            "intermediateResponses": []
+          },
+          "creationTimestamp": 0.0
+        }
+      ],
+      "sessionInput": {
+        "appName": "sow_reviewer",
+        "userId": "eval",
+        "state": {}
+      },
+      "creationTimestamp": 0.0,
+      "finalSessionState": {}
+    },
+    {
+      "evalId": "sow-010",
+      "conversation": [
+        {
+          "invocationId": "sow-010-1",
+          "userContent": {
+            "parts": [
+              {
+                "text": "> SYNTHETIC DOCUMENT — generated for software testing. All names, companies and figures are fictional.\n\n**QUILLSTONE MARINE SERVICES PTE LTD**\nUEN 201200000Q · 18 Tuas Harbour Link, Singapore 637000\nHuman Resources Department\n\n**Date: 24 August 2026**\n\n**TO WHOM IT MAY CONCERN**\n\n**RE: CONFIRMATION OF EMPLOYMENT AND REMUNERATION — MR ORRIN TALVEK DROSSMERE**\n\nThis is to confirm that **Mr Orrin Talvek Drossmere** (Passport ending 4471) has been employed by Quillstone Marine Services Pte Ltd since **3 March 2021** as **Regional Fleet Director** on a full-time, permanent basis.\n\nHis total annual remuneration is **SGD 198,000.00**, paid in twelve equal monthly instalments by GIRO to his designated bank account.\n\nThis letter is issued at the request of the employee and does not constitute a guarantee of continued employment.\n\nYours faithfully,\n\n_/s/ Helena Tay_\nHelena Tay\nDirector, Human Resources\nQuillstone Marine Services Pte Ltd\n"
+              }
+            ],
+            "role": "user"
+          },
+          "intermediateData": {
+            "toolUses": [
+              {
+                "args": {},
+                "name": "extraction_agent"
+              },
+              {
+                "args": {},
+                "name": "run_verify"
+              },
+              {
+                "args": {},
+                "name": "sanctions_lookup"
+              },
+              {
+                "args": {},
+                "name": "compute_disposition"
+              },
+              {
+                "args": {},
+                "name": "critic_loop"
+              },
+              {
+                "args": {},
+                "name": "escalate_to_edd"
+              }
+            ],
+            "toolResponses": [
+              {
+                "name": "compute_disposition",
+                "response": {
+                  "disposition": "escalate_edd"
+                }
+              }
+            ],
+            "intermediateResponses": []
+          },
+          "creationTimestamp": 0.0
+        }
+      ],
+      "sessionInput": {
+        "appName": "sow_reviewer",
+        "userId": "eval",
+        "state": {}
+      },
+      "creationTimestamp": 0.0,
+      "finalSessionState": {}
+    }
+  ],
+  "creation_timestamp": 0.0
+}

@@ -7,11 +7,35 @@
   "period_end": "2026-09-30",
   "currency": "SGD",
   "principal_amount": 406970.55,
-  "sow_category": "employment_income",
+  "sow_category": "unknown",
   "must_have_transactions": [
-    {"date": "2026-07-15", "direction": "credit", "amount": 60000.0, "counterparty": null},
-    {"date": "2026-08-11", "direction": "credit", "amount": 420000.0, "counterparty": "Harbourview Ventures Pte Ltd"},
-    {"date": "2026-09-25", "direction": "debit", "amount": 300000.0}
+    {
+      "date": "2026-07-15",
+      "direction": "credit",
+      "amount": 60000.0,
+      "counterparty": null
+    },
+    {
+      "date": "2026-08-11",
+      "direction": "credit",
+      "amount": 420000.0,
+      "counterparty": "Harbourview Ventures Pte Ltd"
+    },
+    {
+      "date": "2026-09-25",
+      "direction": "debit",
+      "amount": 300000.0
+    }
   ],
-  "must_flag": ["cash deposit 60,000 on 2026-07-15 has no stated origin"]
+  "must_flag": [
+    "cash deposit 60,000 on 2026-07-15 has no stated origin"
+  ],
+  "expected_overall": "needs_follow_up",
+  "expected_disposition": "follow_up",
+  "sanctions_hit": false,
+  "must_flag_keywords": [
+    [
+      "cash"
+    ]
+  ]
 }

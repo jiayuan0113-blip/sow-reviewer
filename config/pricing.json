@@ -1,0 +1,14 @@
+{
+  "source": "https://ai.google.dev/gemini-api/docs/pricing",
+  "read_on": "2026-11-02",
+  "unit": "USD per 1M tokens, Standard paid tier, Gemini API",
+  "note": "Gemini API list price. Prices on Google Cloud may differ; check before quoting a Cloud cost. Thought tokens are billed as output.",
+  "models": {
+    "gemini-3.8-flash": {
+      "input": 0.75,
+      "output": 3.75,
+      "valid_through": "2026-12-31",
+      "after": {"input": 1.50, "output": 7.50}
+    }
+  }
+}

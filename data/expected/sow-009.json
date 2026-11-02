@@ -1,0 +1,22 @@
+{
+  "document_type": "share_sale_agreement",
+  "subject_name": "Nadia Sim Hui Min",
+  "counterparty": null,
+  "document_date": "2026-05-19",
+  "currency": "SGD",
+  "principal_amount": 980000.0,
+  "sow_category": "business_sale",
+  "must_flag": [
+    "purchaser's name is redacted"
+  ],
+  "expected_overall": "insufficient",
+  "expected_disposition": "insufficient",
+  "sanctions_hit": false,
+  "must_flag_keywords": [
+    [
+      "purchaser",
+      "buyer",
+      "counterparty"
+    ]
+  ]
+}

@@ -4,9 +4,12 @@
   "issuer": "Orion Semiconductor Asia Pte Ltd",
   "counterparty": "Orion Semiconductor Asia Pte Ltd",
   "document_date": "2026-07-06",
-  "period_start": "2019-02-01",
   "currency": "SGD",
-  "principal_amount_note": "accept 210000 (12 x base) or 282100 (12 x (base+allowance) + AWS + bonus); the evidence must say which components were summed",
+  "principal_amount": 300100.0,
   "sow_category": "employment_income",
-  "must_flag": []
+  "must_flag": [],
+  "expected_overall": "verified",
+  "expected_disposition": "evidenced",
+  "sanctions_hit": false,
+  "must_flag_keywords": []
 }

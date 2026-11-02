@@ -1,0 +1,16 @@
+{
+  "criteria": {
+    "tool_trajectory_avg_score": {
+      "threshold": 1.0,
+      "match_type": "IN_ORDER",
+      "ignore_args": true
+    },
+    "disposition_match": 1.0
+  },
+  "custom_metrics": {
+    "disposition_match": {
+      "code_config": {"name": "agent.eval_metrics.disposition_match"},
+      "description": "The compute_disposition result equals the case's expected disposition."
+    }
+  }
+}

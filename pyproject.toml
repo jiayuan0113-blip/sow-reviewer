@@ -11,5 +11,11 @@ dependencies = [
     "python-dotenv>=1.2.4",
 ]
 
+[project.optional-dependencies]
+# adk eval needs pandas / rouge-score / tabulate.
+eval = ["google-adk[eval]>=2.13.0"]
+# RAG Engine, adk deploy agent_engine, Cloud Trace exporters.
+gcp = ["google-adk[gcp,otel-gcp]>=2.13.0"]
+
 [tool.uv]
 package = false

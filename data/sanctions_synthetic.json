@@ -1,0 +1,12 @@
+[
+  {"name": "Zephyr Quillon Marrowfen", "aliases": ["Zeph Marrowfen"], "list_name": "SYNTHETIC-LIST-A (fictional test data)", "dob": "1971-03-14"},
+  {"name": "Cassius Velmont Drossmere", "aliases": ["Orrin Talvek Drossmere", "Cass Drossmere"], "list_name": "SYNTHETIC-LIST-A (fictional test data)", "dob": "1968-11-02"},
+  {"name": "Ysolde Brannick Thornquill", "aliases": [], "list_name": "SYNTHETIC-LIST-A (fictional test data)", "dob": null},
+  {"name": "Perrin Oakhollow Vask", "aliases": ["Perry Vask"], "list_name": "SYNTHETIC-LIST-B (fictional test data)", "dob": "1980-07-21"},
+  {"name": "Tamsin Greywater Elloway", "aliases": [], "list_name": "SYNTHETIC-LIST-B (fictional test data)", "dob": "1975-01-30"},
+  {"name": "Fenwick Arkady Lumbrel", "aliases": ["F. A. Lumbrel"], "list_name": "SYNTHETIC-LIST-B (fictional test data)", "dob": null},
+  {"name": "Isolabella Morrow Quince", "aliases": ["Bella Quince"], "list_name": "SYNTHETIC-LIST-B (fictional test data)", "dob": "1990-05-09"},
+  {"name": "Harlan Dustmere Pyke", "aliases": [], "list_name": "SYNTHETIC-LIST-C (fictional test data)", "dob": "1963-09-17"},
+  {"name": "Sablewick Trading Consortium", "aliases": ["Sablewick Consortium"], "list_name": "SYNTHETIC-LIST-C (fictional test data)", "dob": null},
+  {"name": "Northgale Phantom Holdings", "aliases": ["Northgale Holdings Test Co"], "list_name": "SYNTHETIC-LIST-C (fictional test data)", "dob": null}
+]

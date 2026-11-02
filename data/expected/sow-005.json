@@ -7,5 +7,17 @@
   "currency": "SGD",
   "principal_amount": 350000.0,
   "sow_category": "gift",
-  "must_flag": ["donor's source of funds (apartment sale, June 2026) is asserted without supporting document"]
+  "must_flag": [
+    "donor's source of funds (apartment sale, June 2026) is asserted without supporting document"
+  ],
+  "expected_overall": "needs_follow_up",
+  "expected_disposition": "follow_up",
+  "sanctions_hit": false,
+  "must_flag_keywords": [
+    [
+      "donor",
+      "source of funds",
+      "apartment"
+    ]
+  ]
 }

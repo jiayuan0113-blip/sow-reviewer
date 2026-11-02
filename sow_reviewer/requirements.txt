@@ -1,0 +1,4 @@
+# Installed in the Agent Engine image by `adk deploy agent_engine`.
+google-cloud-aiplatform[adk,agent_engines]>=2.2,<3
+google-adk[a2a,mcp]==2.13.0
+mcp>=2.3,<3

@@ -6,3 +6,4 @@ outputs/
 .pytest_cache/
 *.egg-info/
 .adk/
+.env.*.bak
