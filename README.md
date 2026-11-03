@@ -4,7 +4,25 @@ Multi-agent **source-of-wealth document review** built on Google ADK + Gemini. P
 
 **Status (2026-11-03):** all 10 synthetic cases pass end to end and in `adk eval` on `gemini-3.8-flash` through Google Cloud, run locally with RAG Engine answering policy questions with clause citations. The agent was deployed to Agent Runtime in `us-central1`, where three cases were run and passed: sow-004, sow-008 (with the policy step) and sow-010 (pauses for human confirmation). The runtime was deleted on 2026-11-03 to stop billing; `scripts/deploy.sh` recreates it. The RAG corpus is kept for local runs.
 
-These scores come from cases the rules and spec were tuned against. There is no held-out set.
+## Results
+
+Runs on 2026-11-02 and 2026-11-03 with `gemini-3.8-flash` through Google Cloud. `outputs/` is not committed, so the numbers are recorded here.
+
+| Check | Result | How it was run |
+|---|---|---|
+| Unit tests | 104 passed | `uv run --extra gcp --extra eval pytest`, no model calls |
+| End-to-end disposition | 10/10, 0 errors | `scripts/metrics.py`, local, RAG on |
+| Critic approved the report | 10/10 | same run |
+| `adk eval` | 10 passed, 0 failed | `evals/sow_golden.evalset.json`; tool trajectory and `disposition_match` |
+| Extraction: verify grade | 10/10 | `scripts/extract_all.py`, then `scripts/run_evals.py` |
+| Extraction: fields | 80/80 | same |
+| Extraction: planted issues flagged | 6/6 | same |
+| Sanctions screening | 10/10 | same; sow-010 matches, the other nine do not |
+| Model cost per case | US$0.041 mean, estimated | token counts × list prices in `config/pricing.json` (read 2026-11-02), not a billed amount; 319,069 tokens over 10 cases |
+| Latency | p50 208 s, p95 1,011 s | same `metrics.py` run, human wait excluded. 429 retries showed up in the logs, so rate limiting is the likely cause; not checked case by case |
+| Agent Runtime | 3/3 | sow-004 `evidenced` in 112 s; sow-008 `follow_up` citing SOW-POL 4.1 and 4.2 in about 154 s; sow-010 `escalate_edd`, paused for approval, in 58 s |
+
+The first extraction run scored 7/10 on grade and 80/81 on fields. The spec, the expected answers and the code were then changed while looking at those errors, so these scores come from cases the system was tuned against. There is no held-out set.
 
 ## Demo
 
