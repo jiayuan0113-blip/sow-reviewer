@@ -2,9 +2,15 @@
 
 Multi-agent **source-of-wealth document review** built on Google ADK + Gemini. Personal project, synthetic data only. Written for a Google Cloud FDE application; see `docs/` for design notes.
 
-**Status (2026-11-02):** all 10 synthetic cases pass end to end and in `adk eval` on `gemini-3.8-flash` through Google Cloud, run locally with RAG Engine answering policy questions with clause citations. The agent is deployed to Agent Runtime in `us-central1`, where three cases have been run and passed: sow-004, sow-008 (with the policy step) and sow-010 (pauses for human confirmation).
+**Status (2026-11-03):** all 10 synthetic cases pass end to end and in `adk eval` on `gemini-3.8-flash` through Google Cloud, run locally with RAG Engine answering policy questions with clause citations. The agent was deployed to Agent Runtime in `us-central1`, where three cases were run and passed: sow-004, sow-008 (with the policy step) and sow-010 (pauses for human confirmation). The runtime was deleted on 2026-11-03 to stop billing; `scripts/deploy.sh` recreates it. The RAG corpus is kept for local runs.
 
 These scores come from cases the rules and spec were tuned against. There is no held-out set.
+
+## Demo
+
+[![Three-minute demo: sow-010 sanctions hit with human approval, sow-008 policy clauses from RAG Engine](docs/demo-poster.jpg)](docs/demo.mp4)
+
+Three minutes, [docs/demo.mp4](docs/demo.mp4). Recorded from local `adk web` runs of sow-010 and sow-008 on 2026-11-03. The narration is an AI voice.
 
 ## What it does
 
@@ -74,7 +80,7 @@ export GOOGLE_CLOUD_PROJECT=your-project GOOGLE_CLOUD_LOCATION=us-central1
 uv run --extra gcp python scripts/setup_rag.py     # put the printed RAG_CORPUS in sow_reviewer/.env
 scripts/deploy.sh
 uv run --extra gcp python scripts/smoke_test.py <reasoningEngine resource> sow-004
-uv run --extra gcp python scripts/teardown.py <reasoningEngine resource> <ragCorpus resource>
+uv run --extra gcp python scripts/teardown.py <reasoningEngine resource> [<ragCorpus resource>]
 ```
 
 The runtime service agent also needs `aiplatform.ragCorpora.query`, which `roles/aiplatform.user` includes:
