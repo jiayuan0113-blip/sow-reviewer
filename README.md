@@ -54,14 +54,15 @@ Three cases show the three endings:
 
 ## Run locally
 
+Google Cloud mode with Application Default Credentials. `sow_reviewer/.env` sets `GOOGLE_GENAI_USE_ENTERPRISE=1`, `GOOGLE_CLOUD_PROJECT`, `GOOGLE_CLOUD_LOCATION=global` and, for the policy step, `RAG_CORPUS`. Every `uv` command needs `--extra gcp`; without it uv removes the RAG and deploy dependencies.
+
 ```bash
-cp .env.example sow_reviewer/.env   # put your AI Studio key in GOOGLE_API_KEY
-cp .env.example .env
-uv sync
-uv run adk run sow_reviewer                # chat: paste a document from data/cases/
-uv run adk web .                           # browser UI
-uv run python scripts/extract_all.py       # extract all 10 cases → outputs/extracted/
-uv run pytest
+gcloud auth application-default login
+cp .env.example sow_reviewer/.env               # then fill in the values above
+uv sync --extra gcp --extra eval
+uv run --extra gcp adk web .                    # browser UI; paste a document from data/cases/
+uv run --extra gcp python scripts/metrics.py    # end to end on all 10 cases
+uv run --extra gcp pytest
 ```
 
 ## Deploy
