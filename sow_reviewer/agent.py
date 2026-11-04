@@ -3,7 +3,8 @@
 coordinator (root_agent)
   extraction_agent   AgentTool, structured output, gets the raw document
   run_verify         deterministic rules, sow_reviewer/verify.py
-  sanctions_lookup   MCP over stdio, tools/sanctions_server.py
+  run_screening      code screens every extracted name at once; each lookup goes
+                     over MCP (stdio) to tools/sanctions_server.py
   compute_disposition
   policy_agent       AgentTool, RAG Engine; only exists when RAG_CORPUS is set
   critic_loop        report_writer + critic, at most 2 iterations
@@ -30,6 +31,7 @@ from google.adk.tools.agent_tool import AgentTool
 from google.adk.tools.function_tool import FunctionTool
 from google.adk.tools.mcp_tool import McpToolset, StdioConnectionParams
 from google.adk.tools.retrieval.vertex_ai_rag_retrieval import VertexAiRagRetrieval
+from google.adk.tools.tool_context import ToolContext
 from google.genai import types
 from mcp import StdioServerParameters
 
@@ -42,6 +44,7 @@ from .review_tools import (
     inject_document,
     record_tool_result,
     run_verify,
+    screen,
 )
 from .schemas import ExtractedDocument
 
@@ -96,6 +99,18 @@ sanctions_toolset = McpToolset(
     ),
     tool_filter=["sanctions_lookup"],
 )
+
+
+async def _lookup_sanctions(name: str, tool_context: ToolContext):
+    """One lookup through the MCP server. The caller is code, not the model."""
+    tools = await sanctions_toolset.get_tools()
+    tool = next(t for t in tools if t.name == "sanctions_lookup")
+    return await tool.run_async(args={"name": name}, tool_context=tool_context)
+
+
+async def run_screening(tool_context: ToolContext) -> dict:
+    """Screens the client and the counterparty from the extraction against the sanctions list."""
+    return await screen(tool_context, lambda name: _lookup_sanctions(name, tool_context))
 
 
 def _build_policy_agent() -> LlmAgent | None:
@@ -211,7 +226,7 @@ def _coordinator_instruction(ctx: ReadonlyContext) -> str:
 If the user sends a document, run these steps in order, one at a time:
 1. extraction_agent with request="document". The system supplies the document itself.
 2. run_verify.
-3. sanctions_lookup with subject_name, and again with counterparty when it is not null. Pass names exactly as extracted.
+3. run_screening. It takes no arguments: it screens every name from the extraction at once.
 4. compute_disposition.
 {policy_step}
 6. critic_loop with request="review".
@@ -230,7 +245,7 @@ If the user asks a policy question and sends no document, {question}."""
 _coordinator_tools = [
     AgentTool(extraction_agent),
     run_verify,
-    sanctions_toolset,
+    run_screening,
     compute_disposition,
     AgentTool(critic_loop),
     FunctionTool(escalate_to_edd, require_confirmation=True),

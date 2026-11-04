@@ -159,7 +159,7 @@ def summarize(rows: list[dict]) -> dict:
 
 
 async def main(only: str | None) -> None:
-    from sow_reviewer.agent import root_agent
+    from sow_reviewer.agent import root_agent, sanctions_toolset
 
     traced = maybe_enable_cloud_trace()
     pricing = json.loads((ROOT / "config" / "pricing.json").read_text(encoding="utf-8"))
@@ -183,6 +183,8 @@ async def main(only: str | None) -> None:
             )
     finally:
         await runner.close()
+        # run_screening calls the MCP server from code, so the toolset is not in the agent tree.
+        await sanctions_toolset.close()
     summary = summarize(rows)
     print(json.dumps(summary, indent=2))
     out = ROOT / "outputs" / "metrics.json"

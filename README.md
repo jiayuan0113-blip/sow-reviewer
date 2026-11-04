@@ -19,7 +19,7 @@ flowchart TD
   A[Document] --> E
   subgraph C["coordinator, an LLM agent"]
     E["1 extraction_agent<br/>fields + verbatim quotes"]:::model --> V["2 run_verify<br/>rule-based grade"]:::code
-    V --> S["3 sanctions_lookup, over MCP<br/>synthetic list"]:::code
+    V --> S["3 run_screening<br/>every name at once, over MCP"]:::code
     S --> D["4 compute_disposition<br/>grade + screening"]:::code
     D -->|follow_up or insufficient| P["5 policy_agent<br/>RAG, clause citations"]:::model
     D -->|otherwise| W
@@ -35,7 +35,7 @@ flowchart TD
   classDef human fill:#FAECE7,stroke:#993C1D,color:#712B13
 ```
 
-Purple boxes are model calls, green is plain code, orange is a person. The coordinator follows the step order in its prompt. If it skips verification or screening, the code in step 4 refuses to return a disposition.
+Purple boxes are model calls, green is plain code, orange is a person. The coordinator follows the step order in its prompt. If it skips verification, or any name that should have been screened wasn't, the code in step 4 refuses to return a disposition.
 
 Where the code decides:
 
@@ -43,8 +43,9 @@ Where the code decides:
 |---|---|---|
 | `verify()` | `sow_reviewer/verify.py` | Required fields need a quote. A flagged issue, an unexplained credit of 50,000 or more, or a gift of 100,000 or more means follow-up. A missing field means insufficient. |
 | salary total | `sow_reviewer/schemas.py` | Adds up salary components (monthly × 12 + annual), so the model never does arithmetic. |
-| `sanctions_lookup` | `tools/sanctions_server.py` | Exact primary name scores 1.0, exact alias 0.9, every word of a listed name present 0.7. |
-| `compute_disposition` | `sow_reviewer/review_tools.py` | Any sanctions match escalates. Won't answer without a verification and a screening, or after a failed lookup. |
+| `run_screening` | `sow_reviewer/review_tools.py` | Code takes the names from the extraction (the client, plus the counterparty if there is one) and looks them all up at the same time through the MCP server. The model passes no names, so it can't retype one or skip one. Each result records the name, the list, whether the lookup worked, and when. |
+| `sanctions_lookup` | `tools/sanctions_server.py` | The MCP tool. Exact primary name scores 1.0, exact alias 0.9, every word of a listed name present 0.7. |
+| `compute_disposition` | `sow_reviewer/review_tools.py` | Any sanctions match escalates. Won't answer without a verification, if a lookup failed, or if a name the extraction requires wasn't screened. |
 | `check_citations` | `sow_reviewer/citations.py` | Quotes must appear in the document, amounts in a source, clauses in the policy answer. `approve_report` refuses until it passes. |
 | `require_confirmation` | `sow_reviewer/agent.py` | ADK pauses before escalation until a human approves. |
 
@@ -58,14 +59,14 @@ Three cases cover the three outcomes:
 
 ## Results
 
-From runs on 2026-11-02 and 2026-11-03 with `gemini-3.8-flash` through Google Cloud. `outputs/` isn't committed, so I copied the numbers here.
+From runs on 2026-11-02 to 2026-11-04 with `gemini-3.8-flash` through Google Cloud. `outputs/` isn't committed, so I copied the numbers here. On 2026-11-04 I moved screening from the model into code (`run_screening`) and reran the unit tests and `adk eval`; the other rows are from before that change.
 
 | Check | Result | How |
 |---|---|---|
-| Unit tests | 104 passed | `uv run --extra gcp --extra eval pytest`, no model calls |
+| Unit tests | 114 passed | `uv run --extra gcp --extra eval pytest`, no model calls |
 | End-to-end disposition | 10/10, 0 errors | `scripts/metrics.py`, local, RAG on |
 | Critic approved the report | 10/10 | same run |
-| `adk eval` | 10 passed, 0 failed | `evals/sow_golden.evalset.json`, tool trajectory and `disposition_match` |
+| `adk eval` | 10 passed, 0 failed | `evals/sow_golden.evalset.json`, tool trajectory and `disposition_match`; rerun 2026-11-04, local, RAG on |
 | Extraction grade | 10/10 | `scripts/extract_all.py`, then `scripts/run_evals.py` |
 | Extraction fields | 80/80 | same |
 | Planted issues flagged | 6/6 | same |
@@ -119,6 +120,7 @@ gcloud projects add-iam-policy-binding your-project \
 | `sow_reviewer/agent.py` | ADK agents (`root_agent` for the CLI) |
 | `sow_reviewer/schemas.py` | Pydantic output schema |
 | `sow_reviewer/verify.py` | deterministic verification rules |
+| `sow_reviewer/review_tools.py` | function tools and callbacks, including screening and the disposition |
 | `tools/sanctions_server.py` | MCP server over a synthetic list |
 | `data/cases/` | 10 synthetic documents |
 | `data/expected/` | ground truth per case |

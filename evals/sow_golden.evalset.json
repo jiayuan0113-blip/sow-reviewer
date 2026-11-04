@@ -28,7 +28,7 @@
               },
               {
                 "args": {},
-                "name": "sanctions_lookup"
+                "name": "run_screening"
               },
               {
                 "args": {},
@@ -85,7 +85,7 @@
               },
               {
                 "args": {},
-                "name": "sanctions_lookup"
+                "name": "run_screening"
               },
               {
                 "args": {},
@@ -142,7 +142,7 @@
               },
               {
                 "args": {},
-                "name": "sanctions_lookup"
+                "name": "run_screening"
               },
               {
                 "args": {},
@@ -199,7 +199,7 @@
               },
               {
                 "args": {},
-                "name": "sanctions_lookup"
+                "name": "run_screening"
               },
               {
                 "args": {},
@@ -256,7 +256,7 @@
               },
               {
                 "args": {},
-                "name": "sanctions_lookup"
+                "name": "run_screening"
               },
               {
                 "args": {},
@@ -313,7 +313,7 @@
               },
               {
                 "args": {},
-                "name": "sanctions_lookup"
+                "name": "run_screening"
               },
               {
                 "args": {},
@@ -370,7 +370,7 @@
               },
               {
                 "args": {},
-                "name": "sanctions_lookup"
+                "name": "run_screening"
               },
               {
                 "args": {},
@@ -427,7 +427,7 @@
               },
               {
                 "args": {},
-                "name": "sanctions_lookup"
+                "name": "run_screening"
               },
               {
                 "args": {},
@@ -484,7 +484,7 @@
               },
               {
                 "args": {},
-                "name": "sanctions_lookup"
+                "name": "run_screening"
               },
               {
                 "args": {},
@@ -541,7 +541,7 @@
               },
               {
                 "args": {},
-                "name": "sanctions_lookup"
+                "name": "run_screening"
               },
               {
                 "args": {},

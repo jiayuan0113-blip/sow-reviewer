@@ -66,4 +66,5 @@ class VerificationResult:
 - 工具签名：`sanctions_lookup(name: str) -> dict`，返回 `{"query", "matches": [{"name", "list_name", "score"}], "checked_at"}`。
 - 匹配：大小写无关，去标点，主名完全相同算 1.0，别名完全相同算 0.9，主名或别名的每个词都出现（顺序不限）算 0.7。
 - 单元测试直接 import 函数本体测，不走 MCP。
-- 接到 ADK：`MCPToolset(connection_params=StdioConnectionParams(server_params=StdioServerParameters(command="uv", args=["run", "python", "tools/sanctions_server.py"])))`。
+- 接到 ADK：`McpToolset(connection_params=StdioConnectionParams(server_params=StdioServerParameters(command=sys.executable, args=["tools/sanctions_server.py"])))`，见 `sow_reviewer/agent.py`。
+- 调用方是代码，不是模型（2026-11-04 起）：`run_screening` 从 `extracted` 里取 `subject_name` 和非空的 `counterparty`，用 `asyncio.gather` 同时查，每个名字一条结果 `{query, source, status: checked | unavailable, matches, checked_at}`。`compute_disposition` 要求每个该查的名字都是 `checked` 才给处置。

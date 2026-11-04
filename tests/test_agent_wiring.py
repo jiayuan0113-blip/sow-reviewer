@@ -6,6 +6,7 @@ result: this file checks wiring (order, state, loop cap, confirmation), not rule
 
 from __future__ import annotations
 
+import asyncio
 import json
 import os
 import shutil
@@ -13,12 +14,12 @@ import subprocess
 import sys
 import textwrap
 from pathlib import Path
+from types import SimpleNamespace
 
 import pytest
 from google.adk.models.base_llm import BaseLlm
 from google.adk.models.llm_response import LlmResponse
 from google.adk.runners import InMemoryRunner
-from google.adk.tools.function_tool import FunctionTool
 from google.adk.tools.tool_confirmation import ToolConfirmation
 from google.genai import types
 
@@ -26,6 +27,8 @@ from sow_reviewer import agent as agent_module
 from sow_reviewer import review_tools
 from sow_reviewer.schemas import ExtractedDocument
 from sow_reviewer.verify import FieldCheck, VerificationResult
+
+REAL_LOOKUP = agent_module._lookup_sanctions
 
 pytestmark = pytest.mark.anyio
 
@@ -89,8 +92,7 @@ def wired(monkeypatch):
             reasons=[],
         )
 
-    def sanctions_lookup(name: str) -> dict:
-        """Canned hit."""
+    async def canned_lookup(name, tool_context):
         return {
             "query": name,
             "matches": [{"name": "Listed", "list_name": "SYNTHETIC", "score": 0.9}],
@@ -98,11 +100,7 @@ def wired(monkeypatch):
         }
 
     monkeypatch.setattr(review_tools, "verify", canned_verify)
-    tools = [
-        FunctionTool(sanctions_lookup) if t is agent_module.sanctions_toolset else t
-        for t in agent_module.coordinator.tools
-    ]
-    monkeypatch.setattr(agent_module.coordinator, "tools", tools)
+    monkeypatch.setattr(agent_module, "_lookup_sanctions", canned_lookup)
 
     def install(coordinator, extraction=(), writer=(), critic=()):
         monkeypatch.setattr(agent_module.coordinator, "model", coordinator)
@@ -129,7 +127,7 @@ def coordinator_script(after_critic="done"):
     return fake(
         ("extraction_agent", {"request": "document"}),
         ("run_verify", {}),
-        ("sanctions_lookup", {"name": "Orrin Talvek Drossmere"}),
+        ("run_screening", {}),
         ("compute_disposition", {}),
         ("critic_loop", {"request": "review"}),
         ("escalate_to_edd", {"reason": "Alias match on the synthetic list."}),
@@ -216,7 +214,7 @@ async def test_critic_loop_stops_after_two_iterations(wired):
         fake(
             ("extraction_agent", {"request": "document"}),
             ("run_verify", {}),
-            ("sanctions_lookup", {"name": "Orrin Talvek Drossmere"}),
+            ("run_screening", {}),
             ("compute_disposition", {}),
             ("critic_loop", {"request": "review"}),
             "done",
@@ -247,7 +245,7 @@ async def test_critic_cannot_approve_a_failing_check(wired):
         fake(
             ("extraction_agent", {"request": "document"}),
             ("run_verify", {}),
-            ("sanctions_lookup", {"name": "Orrin Talvek Drossmere"}),
+            ("run_screening", {}),
             ("compute_disposition", {}),
             ("critic_loop", {"request": "review"}),
             "done",
@@ -269,32 +267,116 @@ async def test_critic_cannot_approve_a_failing_check(wired):
 
 
 async def test_failed_sanctions_lookup_blocks_the_disposition(wired, monkeypatch):
-    def failing(name: str) -> dict:
-        """Returns the shape of an MCP tool error."""
-        return {"isError": True, "content": [{"type": "text", "text": "boom"}]}
-
-    failing.__name__ = "sanctions_lookup"
-    tools = [
-        FunctionTool(failing) if getattr(t, "name", "") == "sanctions_lookup" else t
-        for t in agent_module.coordinator.tools
-    ]
-    monkeypatch.setattr(agent_module.coordinator, "tools", tools)
     mod = wired(
         fake(
             ("extraction_agent", {"request": "document"}),
             ("run_verify", {}),
-            ("sanctions_lookup", {"name": "Orrin Talvek Drossmere"}),
+            ("run_screening", {}),
             ("compute_disposition", {}),
             "stopped",
         ),
         extraction=[EXTRACTED],
     )
+
+    async def failing(name, tool_context):
+        return {"isError": True, "content": [{"type": "text", "text": "boom"}]}
+
+    monkeypatch.setattr(agent_module, "_lookup_sanctions", failing)
     runner, session = await _session(mod.root_agent)
     events = await run(runner, session.id, user_text(DOCUMENT))
     responses = [r for e in events for r in e.get_function_responses() if r.name == "compute_disposition"]
     assert "error" in responses[0].response
     state = (await runner.session_service.get_session(app_name="sow_reviewer", user_id="u", session_id=session.id)).state
+    assert state["sanctions_results"][0]["status"] == "unavailable"
     assert not state.get("disposition")
+
+
+def test_the_model_sees_run_screening_and_not_the_raw_lookup():
+    names = [getattr(t, "name", getattr(t, "__name__", "")) for t in agent_module.coordinator.tools]
+    assert "run_screening" in names
+    assert "sanctions_lookup" not in names
+    assert agent_module.sanctions_toolset not in agent_module.coordinator.tools
+
+
+WITH_COUNTERPARTY = {"subject_name": "Orrin Talvek Drossmere", "counterparty": "Quillstone Marine Services Pte Ltd"}
+CHECKED = {"status": "checked", "matches": []}
+
+
+def _context(**state):
+    return SimpleNamespace(state=dict(state))
+
+
+@pytest.mark.parametrize(
+    "extracted,want",
+    [
+        (WITH_COUNTERPARTY, ["Orrin Talvek Drossmere", "Quillstone Marine Services Pte Ltd"]),
+        ({"subject_name": "Lim Hui Ling", "counterparty": None}, ["Lim Hui Ling"]),
+        ({"subject_name": "Lim Hui Ling", "counterparty": "  "}, ["Lim Hui Ling"]),
+        ({"subject_name": "Lim Hui Ling", "counterparty": "Lim Hui Ling"}, ["Lim Hui Ling"]),
+    ],
+)
+def test_screening_names_come_from_the_extraction(extracted, want):
+    assert review_tools.screening_names(extracted) == want
+
+
+def test_disposition_refused_when_the_counterparty_was_not_screened():
+    ctx = _context(
+        verification={"overall": "verified", "reasons": []},
+        extracted=WITH_COUNTERPARTY,
+        sanctions_results=[{**CHECKED, "query": "Orrin Talvek Drossmere"}],
+    )
+    result = review_tools.compute_disposition(ctx)
+    assert "Quillstone Marine Services Pte Ltd" in result["error"]
+    assert "disposition" not in ctx.state
+
+
+def test_disposition_refused_when_any_lookup_was_unavailable():
+    ctx = _context(
+        verification={"overall": "verified", "reasons": []},
+        extracted=WITH_COUNTERPARTY,
+        sanctions_results=[
+            {**CHECKED, "query": "Orrin Talvek Drossmere"},
+            {"status": "unavailable", "matches": [], "query": "Quillstone Marine Services Pte Ltd"},
+        ],
+    )
+    assert "unavailable" in review_tools.compute_disposition(ctx)["error"]
+
+
+def test_disposition_given_when_every_name_was_checked():
+    ctx = _context(
+        verification={"overall": "verified", "reasons": []},
+        extracted=WITH_COUNTERPARTY,
+        sanctions_results=[{**CHECKED, "query": n} for n in review_tools.screening_names(WITH_COUNTERPARTY)],
+    )
+    assert review_tools.compute_disposition(ctx)["disposition"] == "evidenced"
+
+
+async def test_screen_runs_the_lookups_concurrently():
+    started, both_started = [], asyncio.Event()
+
+    async def lookup(name):
+        started.append(name)
+        if len(started) == 2:
+            both_started.set()
+        # Times out unless the second lookup starts while this one is still waiting.
+        await asyncio.wait_for(both_started.wait(), timeout=2)
+        return {"query": name, "matches": [], "checked_at": "t"}
+
+    ctx = _context(extracted=WITH_COUNTERPARTY)
+    await review_tools.screen(ctx, lookup)
+    assert [r["query"] for r in ctx.state["sanctions_results"]] == review_tools.screening_names(WITH_COUNTERPARTY)
+    assert {r["status"] for r in ctx.state["sanctions_results"]} == {"checked"}
+
+
+async def test_screen_records_a_raising_lookup_as_unavailable():
+    async def lookup(name):
+        if name.startswith("Quillstone"):
+            raise ConnectionError("list down")
+        return {"query": name, "matches": [], "checked_at": "t"}
+
+    ctx = _context(extracted=WITH_COUNTERPARTY)
+    await review_tools.screen(ctx, lookup)
+    assert [r["status"] for r in ctx.state["sanctions_results"]] == ["checked", "unavailable"]
 
 
 @pytest.mark.parametrize(
@@ -430,7 +512,7 @@ def _flow_to_disposition():
     return fake(
         ("extraction_agent", {"request": "document"}),
         ("run_verify", {}),
-        ("sanctions_lookup", {"name": "Orrin Talvek Drossmere"}),
+        ("run_screening", {}),
         ("compute_disposition", {}),
         "stopped",
     )
@@ -440,14 +522,16 @@ async def test_real_mcp_result_reaches_the_disposition(wired, monkeypatch, tmp_p
     canned = '''return {"query": name, "matches": [{"name": "Listed", "list_name": "SYNTHETIC", "score": 0.9}], "checked_at": "t"}'''
     toolset = _stub_toolset(tmp_path, canned)
     mod = wired(_flow_to_disposition(), extraction=[EXTRACTED])
-    tools = [toolset if getattr(t, "name", "") == "sanctions_lookup" else t for t in mod.coordinator.tools]
-    monkeypatch.setattr(mod.coordinator, "tools", tools)
+    # The real lookup, through a stub server: wired() replaced it with a canned one.
+    monkeypatch.setattr(mod, "_lookup_sanctions", REAL_LOOKUP)
+    monkeypatch.setattr(mod, "sanctions_toolset", toolset)
     runner, session = await _session(mod.root_agent)
     try:
         await run(runner, session.id, user_text(DOCUMENT))
         state = (await runner.session_service.get_session(app_name="sow_reviewer", user_id="u", session_id=session.id)).state
     finally:
         await runner.close()
+        await toolset.close()
     assert state["sanctions_results"][0]["matches"][0]["score"] == 0.9
     assert state["disposition"] == "escalate_edd"
 
@@ -455,13 +539,15 @@ async def test_real_mcp_result_reaches_the_disposition(wired, monkeypatch, tmp_p
 async def test_real_mcp_tool_error_blocks_the_disposition(wired, monkeypatch, tmp_path):
     toolset = _stub_toolset(tmp_path, 'raise RuntimeError("boom")')
     mod = wired(_flow_to_disposition(), extraction=[EXTRACTED])
-    tools = [toolset if getattr(t, "name", "") == "sanctions_lookup" else t for t in mod.coordinator.tools]
-    monkeypatch.setattr(mod.coordinator, "tools", tools)
+    # The real lookup, through a stub server: wired() replaced it with a canned one.
+    monkeypatch.setattr(mod, "_lookup_sanctions", REAL_LOOKUP)
+    monkeypatch.setattr(mod, "sanctions_toolset", toolset)
     runner, session = await _session(mod.root_agent)
     try:
         await run(runner, session.id, user_text(DOCUMENT))
         state = (await runner.session_service.get_session(app_name="sow_reviewer", user_id="u", session_id=session.id)).state
     finally:
         await runner.close()
-    assert state["sanctions_error"] is True
+        await toolset.close()
+    assert state["sanctions_results"][0]["status"] == "unavailable"
     assert not state.get("disposition")

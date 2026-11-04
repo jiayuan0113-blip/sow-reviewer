@@ -19,7 +19,7 @@ OUT = ROOT / "evals" / "sow_golden.evalset.json"
 
 
 def expected_tools(expected: dict) -> list[str]:
-    tools = ["extraction_agent", "run_verify", "sanctions_lookup", "compute_disposition", "critic_loop"]
+    tools = ["extraction_agent", "run_verify", "run_screening", "compute_disposition", "critic_loop"]
     if expected["expected_disposition"] == "escalate_edd":
         tools.append("escalate_to_edd")
     return tools

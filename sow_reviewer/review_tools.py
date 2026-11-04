@@ -3,8 +3,7 @@
 Session state keys written here:
   document_text     raw text of the document under review
   verification      verify() output as a dict
-  sanctions_results one entry per sanctions_lookup call
-  sanctions_error   True if a lookup failed; blocks any disposition
+  sanctions_results one entry per screened name, written by screen()
   disposition       evidenced | follow_up | insufficient | escalate_edd
   citation_check    last result of check_citations
   critic_approved   True once the critic approved the draft
@@ -13,9 +12,11 @@ Session state keys written here:
 
 from __future__ import annotations
 
+import asyncio
 import dataclasses
 import json
-from typing import Any
+from datetime import datetime, timezone
+from typing import Any, Awaitable, Callable
 
 from google.adk.tools.exit_loop_tool import exit_loop
 from google.adk.tools.tool_context import ToolContext
@@ -48,17 +49,63 @@ def run_verify(tool_context: ToolContext) -> dict:
     return result
 
 
+def screening_names(extracted: dict) -> list[str]:
+    """The names every review must screen: the client, and the counterparty when there is one."""
+    names: list[str] = []
+    for name in (extracted.get("subject_name"), extracted.get("counterparty")):
+        name = (name or "").strip()
+        if name and name not in names:
+            names.append(name)
+    return names
+
+
+SANCTIONS_SOURCE = "synthetic sanctions list (tools/sanctions_server.py, over MCP)"
+
+
+async def screen(tool_context: ToolContext, lookup: Callable[[str], Awaitable[Any]]) -> dict:
+    """Screens every name from the extraction concurrently and stores one result per name.
+
+    The names come from session state, not from the model, so a name cannot be retyped
+    or left out. A lookup that raises or returns an error is recorded as unavailable.
+    """
+    state = tool_context.state
+    extracted = state.get("extracted")
+    if not extracted:
+        return {"error": "No extraction in session state. Call extraction_agent first."}
+    names = screening_names(extracted)
+    responses = await asyncio.gather(*(lookup(name) for name in names), return_exceptions=True)
+    results = []
+    for name, response in zip(names, responses):
+        parsed = None if isinstance(response, BaseException) else parse_sanctions_response(response)
+        results.append(
+            {
+                "query": name,
+                "source": SANCTIONS_SOURCE,
+                "status": "checked" if parsed is not None else "unavailable",
+                "matches": parsed["matches"] if parsed is not None else [],
+                "checked_at": (parsed or {}).get("checked_at") or datetime.now(timezone.utc).isoformat(),
+            }
+        )
+    state["sanctions_results"] = results
+    return {"results": results}
+
+
 def compute_disposition(tool_context: ToolContext) -> dict:
     """Combines the verify() grade and the sanctions results into the final disposition."""
     state = tool_context.state
     verification = state.get("verification")
     if not verification:
         return {"error": "No verification result. Call run_verify first."}
-    if state.get("sanctions_error"):
-        return {"error": "A sanctions lookup failed. No disposition can be given without screening."}
     results = state.get("sanctions_results")
     if not results:
-        return {"error": "No sanctions screening recorded. Call sanctions_lookup first."}
+        return {"error": "No sanctions screening recorded. Call run_screening first."}
+    unavailable = [r["query"] for r in results if r.get("status") != "checked"]
+    if unavailable:
+        return {"error": f"Screening was unavailable for {unavailable}. No disposition can be given without screening."}
+    # Every name the extraction requires must have been checked, not just one of them.
+    missing = sorted(set(screening_names(state.get("extracted") or {})) - {r["query"] for r in results})
+    if missing:
+        return {"error": f"Not screened: {missing}. No disposition can be given without screening every name."}
     disposition = disposition_for(verification["overall"], results)
     state["disposition"] = disposition
     return {"disposition": disposition, "reasons": verification.get("reasons", [])}
@@ -129,7 +176,6 @@ def capture_document(callback_context) -> None:
         ("extracted", None),
         ("verification", None),
         ("sanctions_results", []),
-        ("sanctions_error", False),
         ("disposition", None),
         ("policy_answer", None),
         ("draft_report", None),
@@ -169,15 +215,8 @@ def parse_sanctions_response(response: Any) -> dict | None:
 
 
 def record_tool_result(tool, args: dict[str, Any], tool_context: ToolContext, tool_response: Any) -> dict | None:
-    """Stores sanctions results in state, and hands the coordinator the critic's outcome."""
+    """Hands the coordinator the critic's outcome."""
     state = tool_context.state
-    if tool.name == "sanctions_lookup":
-        parsed = parse_sanctions_response(tool_response)
-        if parsed is None:
-            state["sanctions_error"] = True
-        else:
-            state["sanctions_results"] = [*(state.get("sanctions_results") or []), parsed]
-        return None
     if tool.name == "critic_loop":
         # An approved loop ends on exit_loop, which has no text, so the raw tool result is empty.
         approved = bool(state.get("critic_approved"))
